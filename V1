@@ -1,0 +1,126 @@
+import pandas as pd
+
+path = '/home/pi/YT/Recipe/Recipe82 TFT B101XAN01 XG 13001100 250um.MSR'
+
+f = open(path,'r')
+lines = f.readlines()
+'''
+for line in lines:
+    print(line)
+f.close
+'''
+s0 = [21,26,33,38,52,57,64,69]
+s1 = range(2,21)
+s2 = range(102,121)
+
+lines1 = lines[1].split(' ')
+for i in s0:
+    print(lines1[i])
+for i in s1:
+     print(lines[i].split(' ')[1])
+     print(lines[i].split(' ')[4])
+for i in s2:
+     print(lines[i].split(' ')[1])
+     print(lines[i].split(' ')[4])
+
+#任意的多組列表
+lines1 = lines1[21],lines1[26],lines1[33],lines1[38],lines1[52],lines1[57],lines1[64],lines1[69]
+lines2 = lines[2].split(' ')[1],lines[2].split(' ')[4]
+lines3 = lines[3].split(' ')[1],lines[3].split(' ')[4]
+lines4 = lines[4].split(' ')[1],lines[4].split(' ')[4]
+lines5 = lines[5].split(' ')[1],lines[5].split(' ')[4]
+lines6 = lines[6].split(' ')[1],lines[6].split(' ')[4]
+lines7 = lines[7].split(' ')[1],lines[7].split(' ')[4]
+lines8 = lines[8].split(' ')[1],lines[8].split(' ')[4]
+lines9 = lines[9].split(' ')[1],lines[9].split(' ')[4]
+lines10 = lines[10].split(' ')[1],lines[10].split(' ')[4]
+lines11 = lines[11].split(' ')[1],lines[11].split(' ')[4]
+lines12 = lines[12].split(' ')[1],lines[12].split(' ')[4]
+lines13 = lines[13].split(' ')[1],lines[13].split(' ')[4]
+lines14 = lines[14].split(' ')[1],lines[14].split(' ')[4]
+lines15 = lines[15].split(' ')[1],lines[15].split(' ')[4]
+lines16 = lines[16].split(' ')[1],lines[16].split(' ')[4]
+lines17 = lines[17].split(' ')[1],lines[17].split(' ')[4]
+lines18 = lines[18].split(' ')[1],lines[18].split(' ')[4]
+lines19 = lines[19].split(' ')[1],lines[19].split(' ')[4]
+lines20 = lines[20].split(' ')[1],lines[20].split(' ')[4]
+lines21 = lines[21].split(' ')[1],lines[21].split(' ')[4]
+lines102 = lines[102].split(' ')[1],lines[102].split(' ')[4]
+lines103 = lines[103].split(' ')[1],lines[103].split(' ')[4]
+lines104 = lines[104].split(' ')[1],lines[104].split(' ')[4]
+lines105 = lines[105].split(' ')[1],lines[105].split(' ')[4]
+lines106 = lines[106].split(' ')[1],lines[106].split(' ')[4]
+lines107 = lines[107].split(' ')[1],lines[107].split(' ')[4]
+lines108 = lines[108].split(' ')[1],lines[108].split(' ')[4]
+lines109 = lines[109].split(' ')[1],lines[109].split(' ')[4]
+lines110 = lines[110].split(' ')[1],lines[110].split(' ')[4]
+lines111 = lines[111].split(' ')[1],lines[111].split(' ')[4]
+lines112 = lines[112].split(' ')[1],lines[112].split(' ')[4]
+lines113 = lines[113].split(' ')[1],lines[113].split(' ')[4]
+lines114 = lines[114].split(' ')[1],lines[114].split(' ')[4]
+lines115 = lines[115].split(' ')[1],lines[115].split(' ')[4]
+lines116 = lines[116].split(' ')[1],lines[116].split(' ')[4]
+lines117 = lines[117].split(' ')[1],lines[117].split(' ')[4]
+lines118 = lines[118].split(' ')[1],lines[118].split(' ')[4]
+lines119 = lines[119].split(' ')[1],lines[119].split(' ')[4]
+lines120 = lines[120].split(' ')[1],lines[120].split(' ')[4]
+lines121 = lines[121].split(' ')[1],lines[121].split(' ')[4]
+f.close
+#print(lines1,lines2,lines3)
+list1 = pd.DataFrame([lines1,
+                      lines2,lines3,lines4,lines5,lines6,lines7,lines8,lines9,lines10,lines11,
+                      lines12,lines13,lines14,lines15,lines16,lines17,lines18,lines19,lines20,lines21,
+                      lines102,lines103,lines104,lines105,lines106,lines107,lines108,lines109,lines110,lines111,
+                      lines112,lines113,lines114,lines115,lines116,lines117,lines118,lines119,lines120,lines121])
+data = list1.copy()
+print(data.iloc[0:5,0:8])
+
+import glob
+SpecList = glob.glob('\\johnnycchuang\Share_Johnny\CGL430\RecipeSpec\CGL430\SPC*.csv')
+import RPi.GPIO as GPIO
+LED_PIN = 21  #重上圖黃色圈圈可知道GPIO21的位置
+GPIO.setup(LED_PIN , GPIO.OUT)#設定這個IO是輸出還是輸入
+GPIO.output(LED_PIN , 0)#輸出為低電位就是OFF
+GPIO.output(LED_PIN , 1)#輸出為高電位就是ON
+
+
+spc = pd.read_csv('yt0426_spc.csv')
+print(spc.iloc[0:10,0:5])
+
+NG_List = []
+for i in range(0,7):
+    Target = int(data.iat[0,i])
+    LimitDW = int(spc.iat[i,2])
+    LimitUP = int(spc.iat[i,3])
+    Partmeter = spc.iat[i,4]
+    if Target >= LimitDW and Target <= LimitUP:
+        data_check='OK'
+    else:
+        data_check='NG'
+        NG_List.append(Partmeter)
+    #print('Target: %s LimitDW: %s LimitUP: %s Name: %s \n Ans: %s '%(Target,LimitDW,LimitUP,Partmeter,data_check))
+
+for i in range(1,41):
+    Target = int(data.iat[i,0])
+    LimitDW = int(spc.iat[i+7,2])
+    LimitUP = int(spc.iat[i+7,3])
+    Partmeter = spc.iat[i+7,4]
+    if Target >= LimitDW and Target <= LimitUP:
+        data_check='OK'
+    else:
+        data_check='NG'
+        NG_List.append(Partmeter)
+     #   print('Target: %s LimitDW: %s LimitUP: %s Name: %s \n Ans: %s '%(Target,LimitDW,LimitUP,Partmeter,data_check))
+
+for i in range(1,41):
+    Target = int(data.iat[i,1])
+    Limit = int(spc.iat[i+47,3])
+    Partmeter = spc.iat[i+47,4]
+    if Target == Limit:
+        data_check='OK'
+    else:
+        data_check='NG'
+        NG_List.append(Partmeter)
+        #print('Target: %s Limit: %s  Name: %s \n Ans: %s '%(Target,Limit,Partmeter,data_check))
+
+print(NG_List)
